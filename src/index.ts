@@ -1,12 +1,6 @@
 import * as CryptoJS from "crypto-js";
 
 class Block {
-  public index: number;
-  public hash: string;
-  public previosHash: string;
-  public data: string;
-  public timestamp: number;
-
   static calculateHash = (
     index: number,
     previosHash: string,
@@ -14,6 +8,19 @@ class Block {
     data: string
   ): string =>
     CryptoJS.SHA256(index + previosHash + timestamp + data).toString();
+
+  static validateStructure = (aBlock: Block): boolean =>
+    typeof aBlock.index === "number" &&
+    typeof aBlock.hash === "string" &&
+    typeof aBlock.previosHash === "string" &&
+    typeof aBlock.timestamp === "number" &&
+    typeof aBlock.data === "string";
+
+  public index: number;
+  public hash: string;
+  public previosHash: string;
+  public data: string;
+  public timestamp: number;
 
   constructor(
     index: number,
@@ -60,9 +67,43 @@ const createNewBlock = (data: string): Block => {
     newTimeStamp
   );
 
+  addBlock(newBlock);
+
   return newBlock;
 };
 
-console.log(createNewBlock("hello"), createNewBlock("bye bye"));
+const getHashforBlock = (aBlock: Block): string =>
+  Block.calculateHash(
+    aBlock.index,
+    aBlock.previosHash,
+    aBlock.timestamp,
+    aBlock.data
+  );
+
+const isBlockValid = (candidateBlock: Block, previousBlock: Block): boolean => {
+  if (!Block.validateStructure(candidateBlock)) {
+    return false;
+  } else if (previousBlock.index + 1 !== candidateBlock.index) {
+    return false;
+  } else if (previousBlock.hash !== candidateBlock.previosHash) {
+    return false;
+  } else if (getHashforBlock(candidateBlock) !== candidateBlock.hash) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+const addBlock = (candidateBlock: Block): void => {
+  if (isBlockValid(candidateBlock, getLatestBlock())) {
+    blockchain.push(candidateBlock);
+  }
+};
+
+createNewBlock("second Block");
+createNewBlock("third Block");
+createNewBlock("fourth Block");
+
+console.log(blockchain);
 
 export {};
