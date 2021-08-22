@@ -1,3 +1,3 @@
 # typechain
 
-Making a Blockchain with Typescript
+Blockchain with Typescript and digital signatures (SHA-256) using CryptoJS.
