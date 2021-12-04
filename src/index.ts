@@ -1,6 +1,8 @@
 import * as CryptoJS from "crypto-js";
 
+// Structure
 class Block {
+  // Types
   static calculateHash = (
     index: number,
     previosHash: string,
@@ -9,6 +11,7 @@ class Block {
   ): string =>
     CryptoJS.SHA256(index + previosHash + timestamp + data).toString();
 
+  // Validation
   static validateStructure = (aBlock: Block): boolean =>
     typeof aBlock.index === "number" &&
     typeof aBlock.hash === "string" &&
@@ -36,7 +39,7 @@ class Block {
     this.timestamp = timestamp;
   }
 }
-
+// Initialization
 const genesisBlock: Block = new Block(0, "304231", "", "Hello", 123456);
 
 let blockchain: Block[] = [genesisBlock];
@@ -80,6 +83,7 @@ const getHashforBlock = (aBlock: Block): string =>
     aBlock.data
   );
 
+// Validation
 const isBlockValid = (candidateBlock: Block, previousBlock: Block): boolean => {
   if (!Block.validateStructure(candidateBlock)) {
     return false;
@@ -100,6 +104,7 @@ const addBlock = (candidateBlock: Block): void => {
   }
 };
 
+// Test
 createNewBlock("second Block");
 createNewBlock("third Block");
 createNewBlock("fourth Block");
